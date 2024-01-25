@@ -1,0 +1,21 @@
+#Exercise 2
+#Q1
+#In the first function, "my_variable" was assigned to be 10. However, the second function inspects "my_var1able," which is different from "my_variable" because of the difference in "i."
+
+#Q2
+library(tidyverse)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+#Q3
+#Option + Shift + K shows all keyboard shortcut quick reference for functions. To get to the same place, we can click "Help" on the menu bar, and then click the "Keyboard Shortcuts Help." 
+
+#Q4
+my_bar_plot <- ggplot(mpg, aes(x = class)) +
+  geom_bar()
+my_scatter_plot <- ggplot(mpg, aes(x = cty, y = hwy)) +
+  geom_point()
+ggsave(filename = "mpg-plot.png", plot = my_bar_plot)
+
+#The first bar plat was saved as "mpg-plot.png," since the function ggsave includes "plot = my_bar_plot"
