@@ -1,0 +1,412 @@
+#Exercise 10.3.3
+library(tidyverse)
+
+#Q1
+?diamonds
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01)
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01) +
+  coord_cartesian(ylim = c(0, 5))
+
+length <- diamonds |> 
+  filter(y < 20)
+
+ggplot(length, aes(x = x)) +
+  geom_histogram(binwidth = 0.01)
+
+
+ggplot(diamonds, aes(x = y)) + 
+  geom_histogram(binwidth = 0.01)
+ggplot(diamonds, aes(x = y)) + 
+  geom_histogram(binwidth = 0.01) +
+  coord_cartesian(ylim = c(0, 5))
+
+width <- diamonds |> 
+  filter(y < 20)
+
+ggplot(width, aes(x = y)) +
+  geom_histogram(binwidth = 0.01)
+
+
+
+ggplot(diamonds, aes(x = z)) + 
+  geom_histogram(binwidth = 0.01)
+ggplot(diamonds, aes(x = z)) + 
+  geom_histogram(binwidth = 0.01) +
+  coord_cartesian(ylim = c(0, 5))
+
+
+depth <- diamonds |> 
+  filter(z < 20)
+
+ggplot(depth, aes(x = z)) +
+  geom_histogram(binwidth = 0.01)
+
+
+#We can find that the distribution of each of the x, y, and z are skewed right. While the distribution of x does not has evident outlier, the distributions of y and z both have outliers. 
+#To determine which dimension of a diamond is the length, width, and depth: By evaluating the distribution of x, y, and z and not looking at the outliers,
+#if the dimension is the longest and falls in the 3mm-10.74mm range, it will likely be the length; 
+#if the dimension falls in the 3.75mm-10mm range, it will likely be the width; 
+#if the dimension falls in the 2mm-6mm range, it will likely be the depth.
+
+#Q2
+ggplot(diamonds, aes(x = price)) + 
+  geom_histogram(binwidth = 50)
+
+ggplot(diamonds, aes(x = price)) + 
+  geom_histogram(binwidth = 10)
+
+ggplot(diamonds, aes(x = price)) + 
+  geom_histogram(binwidth = 5)
+
+ggplot(diamonds, aes(x = price)) + 
+  geom_histogram(binwidth = 1)
+
+lower_price <- diamonds |> 
+  filter(price < 2500)
+
+ggplot(lower_price, aes(x = price)) +
+  geom_histogram(binwidth = 5)
+
+#The distribution of price is skewed right. There is no diamond pricing around $1500.
+
+#Q3
+diamonds |> 
+  filter(carat == 0.99 ) |> 
+  count (carat)
+#23 diamonds are 0.99 carat
+
+diamonds |> 
+  filter(carat == 1 ) |> 
+  count (carat)
+#1558 diamonds are 0.99 carat
+
+#The difference maybe is because diamonds that are 1 carat are more welcomed and can be sold at a higher price, so the criteria for a 1 carat diamond is stricter. 
+
+#Q4
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01) +
+  coord_cartesian(ylim = c(0, 5))
+
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01) +
+  xlim(3,10)
+
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01) +
+  ylim(0,5)
+
+#While coord_cartesian helps us zoom in a specific range, xlim and ylim do the similar thing but both remove the data outside the limits.
+
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram() +
+  coord_cartesian(ylim = c(0, 5))
+#If we leave binwidth unset, the binwidth will be automatically set and is relatively large. So we cannot see the detailed information for this distribution and whether there are outliers. 
+
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01)
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram(binwidth = 0.01) +
+  coord_cartesian(ylim = c(0, 80))
+#If we try and zoom so only half a bar shows, we can see more details in the distribution, especially between the 9mm-10mm range. 
+
+#Exercise 11.4.6
+install.packages("ggrepel")
+install.packages("patchwork")
+install.packages("hexbin")
+
+
+library(tidyverse)
+library(scales)
+library(ggrepel)
+library(patchwork)
+
+#Q1
+df <- tibble(
+  x = rnorm(10000),
+  y = rnorm(10000)
+)
+
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  scale_fill_gradient(low = "white", high = "red") +
+  coord_fixed()
+#To let the code override the default scale, "scale_color_gradient" should be changed to be "scale_fill_gradient." This is because "scale_color_gradient" colors lines, frames, and points, while "scale_fill_gradient" fills in the entire shape with the designated color.  
+
+#Q2
+#According to https://ggplot2.tidyverse.org/reference/scale_continuous.html, the first argument of the scale is name, which is the name for the axis or legend. If we write "waiver()," which is the default, the name of the scale will be the variable name itself. If we write "NULL," the legend title will be omitted.
+#However, we can change the axis and legend titles by labs() directly. Besides, we can change the graph's title, subtitle, caption, tags, etc in labs() too.
+
+
+
+
+
+
+
+
+#10.4.1 
+
+#1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference in how missing values are handled in histograms and bar charts? 
+ 
+Missing values are generally excluded from histograms. A histogram is used to display the distribution of a numeric variable by dividing the data into bins or intervals. Since missing values don't fall into any specific bin, they are not represented in the histogram. The purpose of a histogram is to show the distribution of a continuous or discrete numerical variable. Missing values do not contribute to this distribution since they have no value and, therefore, cannot be placed into any of the histogram’s bins. 
+ 
+
+#In bar charts, missing values can be treated in two ways, depending on the context and the intention of the data visualization: 
+
+#Exclusion: Missing values might simply be excluded, meaning that only the available data is used to construct the bars. Each bar represents a category or group, and missing data doesn't belong to any existing category. 
+
+#Inclusion as a Separate Category: Alternatively, missing values can be included as a separate category or group, often labeled as "Missing," "NA," or something similar. This approach is useful when the fact that data is missing is itself informative. 
+
+#This is because bar charts are often used to display categorical data or the counts/frequencies of occurrences in different categories. Since missing data can sometimes represent a meaningful category by itself (indicating, for example, that the data was not collected or is unavailable), it can be valuable to include missing values as a distinct category to highlight this.  
+ 
+#The difference in handling missing values between histograms and bar charts stems from the nature of the data each is used to represent: 
+
+ 
+
+#Histograms are for continuous or discrete numerical data, aiming to show the distribution of this data. Missing values do not fit into any part of this distribution, so they are excluded. 
+
+#Bar Charts are for categorical data or comparing quantities across different groups or categories. Since missing values can form a "category" by indicating the absence of data, they can be included to provide additional insights into the data set. 
+
+ 
+
+#2. What does na.rm = TRUE do in mean() and sum()? 
+
+When you use mean(x, na.rm=TRUE), the function calculates the average of the elements in x, excluding any missing values (NAs) from the calculation. When you use sum(x, na.rm=TRUE), the function sums up the elements of x, ignoring any missing values. 
+
+ 
+
+#3. Recreate the frequency plot of scheduled_dep_time colored by whether the flight was cancelled or not. Also facet by the cancelled variable. Experiment with different values of the scales variable in the faceting function to mitigate the effect of more non-cancelled flights than cancelled flights. 
+
+ 
+
+library(ggplot2) 
+
+library(dplyr) 
+
+flights$cancelled <- as.factor(flights$cancelled) 
+
+ggplot(flights, aes(x = scheduled_dep_time, fill = cancelled)) +  
+
+  geom_histogram(binwidth = 60, position = "identity", alpha = 0.5) +  
+
+  facet_wrap(~ cancelled, scales = "free_y") +  
+
+  labs(x = "Scheduled Departure Time",  
+
+       y = "Frequency",  
+
+       title = "Frequency of Flights by Scheduled Departure Time, Colored by Cancellation Status") +  
+
+  theme_minimal() 
+
+ 
+
+#Explanation: 
+
+#geom_histogram(binwidth = 60, position = "identity", alpha = 0.5): This creates a histogram with bins of width 60 minutes. position = "identity" allows the bars to overlap, which combined with alpha = 0.5 makes it easier to see both cancelled and non-cancelled flights when they overlap. Adjust binwidth as necessary for your dataset. 
+
+#facet_wrap(~ cancelled, scales = "free_y"): This facets the plot by the cancelled variable. Setting scales = "free_y" allows each facet to have its own y-axis scale, which is useful when there's a large disparity in the counts of cancelled vs non-cancelled flights. You can experiment with scales = "fixed", scales = "free_x", or scales = "free" depending on how you want to balance the scales across facets. 
+
+#theme_minimal(): This applies a minimal theme to the plot for a cleaner look. 
+
+#Experimenting with Scales 
+
+#The scales argument in facet_wrap or facet_grid is crucial for handling disparities in your data: 
+
+ 
+
+#"fixed": Both x and y scales will be the same for all facets. Use this when you want to directly compare the facets. 
+
+#"free_x": Each facet may have a different x scale. This is less commonly used for histograms but can be useful for other types of facet plots. 
+
+#"free_y": Each facet may have a different y scale. This is particularly useful here as it allows you to adjust each facet's y-axis independently, mitigating the effect of having more non-cancelled flights. 
+
+#"free": Both x and y scales can vary across facets. Use this when both axes might benefit from independent scaling per facet. 
+
+#Choose the scales option that best represents your data while maintaining readability and accurately conveying the distribution differences between cancelled and non-cancelled flights. 
+ 
+ 
+#11.2.1 
+ 
+#1. Create one plot on the fuel economy data with customized title, subtitle, caption, x, y, and color labels. 
+
+library(ggplot2) 
+
+ggplot(data = fuel_economy, aes(x = city_mpg, y = highway_mpg, color = make)) + 
+
+  geom_point(alpha = 0.5) +  
+
+  labs(title = "Comparison of City and Highway Fuel Economy", 
+
+       subtitle = "Data grouped by car make", 
+
+       caption = "Source: Your Data Source Here", 
+
+       x = "City MPG", 
+
+       y = "Highway MPG", 
+
+       color = "Car Make") + 
+
+  theme_minimal() + 
+
+  theme(plot.title = element_text(hjust = 0.5), 
+
+        plot.subtitle = element_text(hjust = 0.5), 
+
+       plot.caption = element_text(hjust = 0, face = "italic")) 
+
+ 
+
+#11.3.1 (3-5) 
+
+ 
+
+#Question 3 
+
+#To add label in single facet, add a column to the label data frame with the value of the faceting variable(s) in which to add it 
+
+label <- tibble( 
+
+  displ = Inf, 
+
+  hwy = Inf, 
+
+  class = "2seater", 
+
+  label = "smple label" 
+
+) 
+
+ 
+
+ggplot(mpg, aes(displ, hwy)) + 
+
+  geom_point() + 
+
+  geom_text(aes(label = label), 
+
+    data = label, vjust = "top", hjust = "right", 
+
+    size = 2 
+
+  ) + 
+
+  facet_wrap(~class) 
+
+  
+
+#To add different lable 
+
+label <- tibble( 
+
+  displ = Inf, 
+
+  hwy = Inf, 
+
+  class = unique(mpg$class), 
+
+  label = str_c("Label for ", class) 
+
+) 
+
+ 
+
+ggplot(mpg, aes(displ, hwy)) + 
+
+  geom_point() + 
+
+  geom_text(aes(label = label), 
+
+    data = label, vjust = "top", hjust = "right", 
+
+    size = 3 
+
+  ) + 
+
+  facet_wrap(~class) 
+
+ 
+
+#Question 4 
+
+#The argument fill controls the background color and the argument alpha control the brightness 
+
+ 
+
+#Question 5 
+
+#the agruments to arrows() are; 
+
+# angle     -The angle of the arrow head in degrees (smaller numbers produce narrower, pointier arrows). Essentially describes the width of the arrow head. 
+
+#length     -A unit specifying the length of the arrow head (from tip to base). 
+
+#ends -One of "last", "first", or "both", indicating which ends of the line to draw arrow heads. 
+
+#type- One of "open" or "closed" indicating whether the arrow head should be a closed triangle. 
+
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+
+   geom_point() + 
+
+   geom_curve( 
+
+     aes(x = 2, y = 20, xend = 6, yend = 25), 
+
+     data = mpg, 
+
+     arrow = arrow(length = unit(0.03, "npc")) 
+
+   ) 
+
+
+#11.4.6 (1-4)
+
+#1. Why doesn’t the following code override the default scale?
+#It does not override the default scale because the colors in `geom_hex()` are set by the `fill` aesthetic, not the `color` aesthetic.
+
+#2. What is the first argument to every scale? How does it compare to labs()?
+#The first argument to every scale is the label for the scale.
+It is equivalent to using the `labs` function.
+
+#3
+
+```{r}
+fouryears <- lubridate::make_date(seq(year(min(presidential$start)),
+  year(max(presidential$end)),
+  by = 4
+), 1, 1)
+
+presidential %>%
+  mutate(
+    id = 33 + row_number(),
+    name_id = fct_inorder(str_c(name, " (", id, ")"))
+  ) %>%
+  ggplot(aes(start, name_id, colour = party)) +
+  geom_point() +
+  geom_segment(aes(xend = end, yend = name_id)) +
+  scale_colour_manual("Party", values = c(Republican = "red", Democratic = "blue")) +
+  scale_y_discrete(NULL) +
+  scale_x_date(NULL,
+    breaks = presidential$start, date_labels = "'%y",
+    minor_breaks = fouryears
+  ) +
+  ggtitle("Terms of US Presdients",
+    subtitle = "Roosevelth (34th) to Obama (44th)"
+  ) +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+```
+
+#To include both the start dates of presidential terms and every
+#four years, I use different levels of emphasis. 
+#The presidential term start years are used as major breaks with thicker lines and x-axis labels.
+#Lines for every four years is indicated with minor breaks that use thinner lines to distinguish them from presidential term start years and to avoid cluttering the plot.
+
+
+
+ 
